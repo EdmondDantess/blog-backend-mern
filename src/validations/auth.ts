@@ -11,6 +11,7 @@ export const registerValidation = [
         .optional()
         .isURL()
 ];
+
 export const loginValidation = [
     body('email', 'Неверный формат почты')
         .isEmail(),

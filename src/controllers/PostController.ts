@@ -1,15 +1,12 @@
-import PostModel from '../models/Post.js';
+import PostModel from '../models/Post';
+import {Request, Response} from 'express';
 
-export const getAllPosts = async (req, res) => {
+export const getAllPosts = async (req: Request, res: Response) => {
     try {
         const posts = await PostModel.find()
             .populate('user') // Связали наше поле user для того чтобы достать из таблицы User св-ва и поместить в текущее св-во
             .exec();
-        const {
-            passwordHash,
-            ...postsFormatted
-        } = posts;
-        res.json(postsFormatted);
+        res.json(posts);
     } catch (e) {
         console.log(e);
         res.status(500)
@@ -18,7 +15,7 @@ export const getAllPosts = async (req, res) => {
             });
     }
 };
-export const getPost = async (req, res) => {
+export const getPost = async (req: Request, res: Response) => {
     try {
         const postId = req.params.id;
 
@@ -39,7 +36,7 @@ export const getPost = async (req, res) => {
             });
     }
 };
-export const deletePost = async (req, res) => {
+export const deletePost = async (req: Request, res: Response) => {
     try {
         const postId = req.params.id;
         await PostModel.findByIdAndDelete(postId);
@@ -56,7 +53,7 @@ export const deletePost = async (req, res) => {
 
 };
 
-export const postCreate = async (req, res) => {
+export const postCreate = async (req: Request, res: Response) => {
     try {
 
         const doc = new PostModel({
@@ -77,11 +74,12 @@ export const postCreate = async (req, res) => {
     }
 };
 
-export const updatePost = async (req, res) => {
+export const updatePost = async (req: Request, res: Response) => {
     try {
 
         const postId = req.params.id;
-        await PostModel.updateOne({ _id: postId },
+
+        await PostModel.updateOne({_id: postId},
             {
                 title: req.body.title,
                 text: req.body.text,

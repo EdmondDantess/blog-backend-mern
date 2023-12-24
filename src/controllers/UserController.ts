@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
-import UserModel from '../models/User.js';
+import UserModel from '../models/User';
 import jwt from 'jsonwebtoken';
+import {Request, Response} from 'express';
 
-export const register = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
     try {
         const password = req.body.password;
         const salt = await bcrypt.genSalt(10);
@@ -26,7 +27,7 @@ export const register = async (req, res) => {
         let {
             passwordHash,
             ...userData
-        } = user._doc;
+        } = user;
 
         res.json({
             ...userData,
@@ -41,12 +42,13 @@ export const register = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
     try {
-        const user = await UserModel.findOne({ email: req.body.email });
+
+        const user = await UserModel.findOne({email: req.body.email});
 
         if (!user) {
-            res.status(404)
+            return res.status(404)
                 .json({
                     message: 'Пользователь не найден'
                 });
@@ -55,7 +57,7 @@ export const login = async (req, res) => {
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
 
         if (!isValidPass) {
-            res.status(400)
+            return res.status(400)
                 .json({
                     message: 'Неверный логин или пароль'
                 });
@@ -85,11 +87,11 @@ export const login = async (req, res) => {
     }
 };
 
-export const getMe = async (req, res) => {
+export const getMe = async (req: Request, res: Response) => {
     try {
         const user = await UserModel.findById(req.userId);
         if (!user) {
-            res.status(404)
+            return res.status(404)
                 .json({
                     message: 'Пользователь не найден'
                 });

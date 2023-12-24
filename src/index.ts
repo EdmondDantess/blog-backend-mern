@@ -1,10 +1,10 @@
-import express from 'express';
+import express, {Application, Request, Response} from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
-import { loginValidation, registerValidation } from './validations/auth.js';
-import { PostController, UserController } from './controllers/index.js';
-import { postCreateValidation } from './validations/post.js';
-import { checkAuth, handleValidationErrors } from './utils/index.js';
+import {loginValidation, registerValidation} from './validations/auth';
+import {PostController, UserController} from './controllers';
+import {postCreateValidation} from './validations/post';
+import {checkAuth, handleValidationErrors} from './utils';
 
 mongoose
     .connect('mongodb+srv://maximlavrovsky:maximsmongodb@cluster0.aufmgcu.mongodb.net/blog-mern?retryWrites=true&w=majority')
@@ -13,7 +13,7 @@ mongoose
         console.log('DB error', e);
     });
 
-const app = express();
+const app: Application = express();
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
@@ -26,31 +26,28 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+const upload = multer({storage});
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('Start develop');
 });
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
-        url: `/uploads/${req.file.originalname}`
+        url: `/uploads/${req.file?.originalname}`
     });
 });
 
 app.get('/auth/me', checkAuth, UserController.getMe);
-app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
-app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
+app.post('/auth/login', ...loginValidation, handleValidationErrors, UserController.login);
+app.post('/auth/register', ...registerValidation, handleValidationErrors, UserController.register);
 
-app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.updatePost);
+app.patch('/posts/:id', checkAuth, ...postCreateValidation, handleValidationErrors, PostController.updatePost);
 app.get('/posts/:id', PostController.getPost);
 app.delete('/posts/:id', checkAuth, PostController.deletePost);
 app.get('/posts', PostController.getAllPosts);
-app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.postCreate);
+app.post('/posts', checkAuth, ...postCreateValidation, handleValidationErrors, PostController.postCreate);
 
-app.listen(4444, (err) => {
-    if (err) {
-        return console.log(err);
-    }
+app.listen(4444, () => {
     console.log('Server is OK...');
 });

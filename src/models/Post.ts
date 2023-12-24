@@ -1,6 +1,21 @@
 import mongoose from 'mongoose';
 
-const PostSchema = new mongoose.Schema({
+
+interface IPostResult<T> extends mongoose.Document {
+    _doc: T
+}
+
+interface IPost extends IPostResult<IPost> {
+    user: mongoose.Types.ObjectId
+    title: string
+    text: string
+    viewCount?: number
+    imageUrl?: string
+    tags?: string[]
+}
+
+
+const PostSchema = new mongoose.Schema<IPost>({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -28,4 +43,4 @@ const PostSchema = new mongoose.Schema({
     timestamps: true
 });
 
-export default mongoose.model('Post', PostSchema);
+export default mongoose.model<IPost>('Post', PostSchema);

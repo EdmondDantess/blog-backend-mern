@@ -1,6 +1,7 @@
-import express, {Application, Request, Response} from 'express';
+import express, {Application, Express, Request, Response} from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors'
 import {loginValidation, registerValidation} from './validations/auth';
 import {PostController, UserController} from './controllers';
 import {postCreateValidation} from './validations/post';
@@ -13,8 +14,9 @@ mongoose
         console.log('DB error', e);
     });
 
-const app: Application = express();
+const app = express();
 app.use(express.json());
+app.use(cors())
 app.use('/uploads', express.static('uploads'));
 
 const storage = multer.diskStorage({

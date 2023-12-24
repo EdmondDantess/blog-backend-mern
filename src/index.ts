@@ -1,4 +1,4 @@
-import express, {Application, Express, Request, Response} from 'express';
+import express, {Request, Response} from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import cors from 'cors'
@@ -49,6 +49,8 @@ app.get('/posts/:id', PostController.getPost);
 app.delete('/posts/:id', checkAuth, PostController.deletePost);
 app.get('/posts', PostController.getAllPosts);
 app.post('/posts', checkAuth, ...postCreateValidation, handleValidationErrors, PostController.postCreate);
+
+app.get('/tags', PostController.getLastTags)
 
 app.listen(4444, () => {
     console.log('Server is OK...');

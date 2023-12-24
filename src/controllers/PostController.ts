@@ -1,6 +1,26 @@
 import PostModel from '../models/Post';
 import {Request, Response} from 'express';
 
+export const getLastTags = async (req: Request, res: Response) => {
+    try {
+        const posts = await PostModel.find()
+            .limit(5)
+            .exec();
+
+        const tags = posts.map(el => el.tags)
+            .flat()
+            .slice(0, 5)
+
+        res.json(tags);
+    } catch (e) {
+        console.log(e);
+        res.status(500)
+            .json({
+                message: 'Не удалось получить теги'
+            });
+    }
+}
+
 export const getAllPosts = async (req: Request, res: Response) => {
     try {
         const posts = await PostModel.find()

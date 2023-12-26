@@ -80,7 +80,7 @@ export const postCreate = async (req: Request, res: Response) => {
         const doc = new PostModel({
             title: req.body.title,
             text: req.body.text,
-            tags: req.body.tags,
+            tags: req.body.tags.split(','),
             imageUrl: req.body.imageUrl,
             user: req.userId
         });
@@ -106,7 +106,7 @@ export const updatePost = async (req: Request, res: Response) => {
                 text: req.body.text,
                 imageUrl: req.body.imageUrl,
                 user: req.userId,
-                tags: req.body.tags
+                tags: req.body.tags.split(',')
             }
         );
         res.json({

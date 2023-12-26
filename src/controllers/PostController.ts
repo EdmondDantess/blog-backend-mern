@@ -46,7 +46,8 @@ export const getPost = async (req: Request, res: Response) => {
                 }
             }, {
                 returnDocument: 'after'  // вернёт документ после того как выполнит инкрементирование
-            });
+            })
+            .populate('user')
         res.json(data);
     } catch (e) {
         console.log(e);
@@ -78,7 +79,7 @@ export const postCreate = async (req: Request, res: Response) => {
 
         const doc = new PostModel({
             title: req.body.title,
-            text: req.body.title,
+            text: req.body.text,
             tags: req.body.tags,
             imageUrl: req.body.imageUrl,
             user: req.userId
